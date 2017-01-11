@@ -47,7 +47,7 @@ def load_config(file):
 
     log.debug('Successfully parsed and validated config file: "%s"', repr(cfg))
 
-    validate_config
+    validate_config(cfg)
 
     return cfg
 
@@ -89,3 +89,5 @@ def validate_config(cfg):
     for executable in cfg["preexec"]:
         if not os.access(executable, os.X_OK):
             raise ConfigValidationError('Postexec script is not executable'.format(executable))
+
+    return True
