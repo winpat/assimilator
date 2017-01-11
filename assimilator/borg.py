@@ -4,6 +4,7 @@
 from os import environ
 from subprocess import check_call, CalledProcessError
 from datetime import datetime
+from metrics import CREATE_DURATION_SECONDS, CREATE_RC, PRUNE_DURATION_SECONDS, PRUNE_RC
 import logging
 
 
@@ -19,6 +20,7 @@ def _compose_repository(cfg):
     ))
 
 
+@CREATE_DURATION_SECONDS.time()
 def create_archive(cfg):
 
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -47,10 +49,12 @@ def create_archive(cfg):
     try:
         check_call(cmd)
     except CalledProcessError as e:
+        CREATE_RC_STATUS.set(e.returncode)
         logger.error('Creation of archive failed with exception "%s"', e)
         raise RuntimeError('Unable to create backup')
 
 
+@PRUNE_DURATION_SECONDS.time()
 def prune_repository(cfg):
     '''Prunes a repository by removing old archive. The configuration happens
     through the retention key in the config struct
@@ -77,6 +81,7 @@ def prune_repository(cfg):
     try:
         check_call(cmd)
     except CalledProcessError as e:
+        PRUNE_RC_STATUS.set(e.returncode)
         logger.error('Pruning of repository failed with exception "%s"', e)
         raise RuntimeError('Unable to prune repository')
 

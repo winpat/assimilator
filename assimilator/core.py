@@ -3,6 +3,7 @@
 
 from subprocess import check_call, CalledProcessError
 from logging import handlers
+from metrics import PREEXEC_DURATION_SECONDS, PREEXEC_RC, POSTEXEC_DURATION_SECONDS, POSTEXEC_RC
 import logging
 import argparse
 
@@ -35,21 +36,23 @@ def configure_logger(level, syslog):
         logger.addHandler(syslog_handler)
 
 
+@PREEXEC_DURATION_SECONDS.time()
 def run_preexec(executables):
     '''Wrapper function to run preexec scripts
     '''
     logger.info("Running preexec scripts")
-    run_executables(executables)
+    run_executables(executables, PREEXEC_RC)
 
 
+@POSTEXEC_DURATION_SECONDS.time()
 def run_postexec(executables):
     '''Wrapper function to run postexec scripts
     '''
     logger.info("Running postexec scripts")
-    run_executables(executables)
+    run_executables(executables, POSTEXEC_RC)
 
 
-def run_executables(executables):
+def run_executables(executables, rcvar):
 
     for executable in executables:
 
