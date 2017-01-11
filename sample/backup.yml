@@ -1,0 +1,29 @@
+# assimilator configuration file
+
+compression: none
+compression_level: 0
+
+paths:
+  - /home/user
+
+excludes:
+  - /tmp
+   
+repository: 
+  user: root
+  host: collective.domain.tld
+  path: /path/repository
+  passphrase: password
+  port: 22
+
+retention:
+  enable: true
+  hourly: 1
+  daily: 1
+  weekly: 1
+  monthly: 1
+  yearly: 1
+
+logging:
+  level: DEBUG
+  syslog: False
