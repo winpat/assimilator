@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from os import environ
-from subprocess import check_call, CalledProcessError
+from subprocess import check_output, CalledProcessError, STDOUT
 from datetime import datetime
 from metrics import CREATE_DURATION_SECONDS, CREATE_RC, PRUNE_DURATION_SECONDS, PRUNE_RC
 import logging
-
 
 logger = logging.getLogger('logger')
 
@@ -26,7 +25,7 @@ def create_archive(cfg):
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     archive = "{}::{}".format(_compose_repository(cfg), timestamp)
 
-    logger.info('Creating archive "%s"'.format(timestamp))
+    logger.info('Creating archive "{}"'.format(timestamp))
 
     cmd = ["borg", "create", "--verbose", "--stats", archive]
 
@@ -47,9 +46,11 @@ def create_archive(cfg):
     environ["BORG_PASSPHRASE"] = cfg['repository']['passphrase']
 
     try:
-        check_call(cmd)
+        out = check_output(cmd, stderr=STDOUT).decode('utf-8')
+        for line in out.split("\n"):
+            print("{}".format(line))
     except CalledProcessError as e:
-        CREATE_RC_STATUS.set(e.returncode)
+        CREATE_RC.set(e.returncode)
         logger.error('Creation of archive failed with exception "%s"', e)
         raise RuntimeError('Unable to create backup')
 
@@ -68,20 +69,21 @@ def prune_repository(cfg):
                 '-d {}'.format(cfg['retention']['daily']),
                 '-w {}'.format(cfg['retention']['weekly']),
                 '-m {}'.format(cfg['retention']['monthly']),
-                '-y {}'.format(cfg['retention']['yearly'])
-    ])
+                '-y {}'.format(cfg['retention']['yearly'])])
 
     cmd.append(_compose_repository(cfg))
 
-    print(cmd)
     logger.debug('Composed shell command "%s"', ' '.join(cmd))
 
     environ["BORG_PASSPHRASE"] = cfg['repository']['passphrase']
 
     try:
-        check_call(cmd)
+        out = check_output(cmd, stderr=STDOUT).decode('utf-8')
+        for line in out.split("\n"):
+            if line is not '':
+                print("{}".format(line))
+
     except CalledProcessError as e:
-        PRUNE_RC_STATUS.set(e.returncode)
+        PRUNE_RC.set(e.returncode)
         logger.error('Pruning of repository failed with exception "%s"', e)
         raise RuntimeError('Unable to prune repository')
-
