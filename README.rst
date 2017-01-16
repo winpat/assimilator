@@ -1,5 +1,12 @@
 `Assimilator <http://memory-alpha.wikia.com/wiki/Assimilation>`_
 ===========
+|travis| |license|
+
+.. |travis| image:: https://img.shields.io/travis/adfinis-sygroup/vault-client.svg?style=flat-square
+   :target: https://img.shields.io/github/license/adfinis-sygroup/vault-client.svg?style=flat-square
+
+.. |license| image:: https://img.shields.io/github/license/adfinis-sygroup/vault-client.svg?style=flat-square
+   :target: https://img.shields.io/github/license/adfinis-sygroup/vault-client.svg?style=flat-square
 
 (Work in progress)
 
