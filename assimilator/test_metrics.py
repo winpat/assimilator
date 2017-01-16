@@ -6,7 +6,8 @@ def test_valid_convert_to_byte():
 
     valid_sizes = {'10 MB': 10000000,
                    '1024 kB': 1024000,
-                   '321 TB': 321000000000000}
+                   '321 TB': 321000000000000,
+                   '234 B': 234}
 
     for size, solution in valid_sizes.items():
 

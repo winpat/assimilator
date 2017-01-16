@@ -7,25 +7,25 @@ import re
 
 registry = CollectorRegistry()
 
-PRUNE_RETURN_CODE = Gauge('borg_prune_return_code',
-                 'Exit code of borgbackup prune',
-                 registry=registry)
+PRUNE_RETURN_CODE = Gauge('assimilator_prune_return_code',
+                          'Exit code of borgbackup prune',
+                          registry=registry)
 
-PRUNE_DURATION_SECONDS = Gauge('borg_prune_duration_seconds',
+PRUNE_DURATION_SECONDS = Gauge('assimilator_prune_duration_seconds',
                                'Duration of borgbackup prune',
                                registry=registry)
 
 PREEXEC_RETURN_CODE = Gauge('assimilator_preexec_return_code',
-                   'Exit code of assimilator preexec scripts',
-                   registry=registry)
+                            'Exit code of assimilator preexec scripts',
+                            registry=registry)
 
 PREEXEC_DURATION_SECONDS = Gauge('assimilator_preexec_duration_seconds',
                                  'Duration of assimilator preexec scripts',
                                  registry=registry)
 
 POSTEXEC_RETURN_CODE = Gauge('assimilator_postexec_return_code',
-                    'Exit code of assimilator postexec scripts',
-                    registry=registry)
+                             'Exit code of assimilator postexec scripts',
+                             registry=registry)
 
 POSTEXEC_DURATION_SECONDS = Gauge('assimilator_postexec_duration_seconds',
                                   'Duration of assimilator postexec scripts',
@@ -86,14 +86,16 @@ def parse_borg_create_output(output):
     CREATE_FILES_COUNT.set(match.group(1))
 
     # Parse "This archives:" section
-    pattern = re.compile('This archive:\s*([0-9.]*\s[kBMGTEZY]{2})\s*([0-9.]*\s[kBMGTEZY]{2})\s*([0-9.]*\s[kBMGTEZY]{2})')
-    match = re.match(pattern, output[9])
+    print(output[9])
+    somestring = output[9]
+    pattern = re.compile('This archive:\s*([0-9.]*\s[kBMGTEZY]{1,2})\s*([0-9.]*\s[kBMGTEZY]{1,2})\s*([0-9.]*\s[kBMGTEZY]{1,2})')
+    match = re.match(pattern, somestring)
     CREATE_ARCHIVE_ORIGINAL_SIZE_BYTES.set(convert_to_byte(match.group(1)))
     CREATE_ARCHIVE_COMPRESSED_SIZE_BYTES.set(convert_to_byte(match.group(2)))
     CREATE_ARCHIVE_DEDUPLICATED_SIZE_BYTES.set(convert_to_byte(match.group(3)))
 
     # Parse "All archives:" section
-    pattern = re.compile('All archives:\s*([0-9.]*\s[kBMGTEZY]{2})\s*([0-9.]*\s[kBMGTEZY]{2})\s*([0-9.]*\s[kBMGTEZY]{2})')
+    pattern = re.compile('All archives:\s*([0-9.]*\s[kBMGTEZY]{1,2})\s*([0-9.]*\s[kBMGTEZY]{1,2})\s*([0-9.]*\s[kBMGTEZY]{1,2})')
     match = re.match(pattern, output[10])
     CREATE_ALL_ARCHIVES_ORIGINAL_SIZE_BYTES.set(convert_to_byte(match.group(1)))
     CREATE_ALL_ARCHIVES_COMPRESSED_SIZE_BYTES.set(convert_to_byte(match.group(2)))
@@ -116,6 +118,7 @@ def convert_to_byte(size):
     value = size[0]
 
     switcher = {
+        'B' : 1000**0,
         'kB': 1000**1,
         'MB': 1000**2,
         'GB': 1000**3,

@@ -16,9 +16,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser('Wrapper around borg')
 
     parser.add_argument('-c', '--cfgfile', action='store',
-                        metavar='CONFIG_FILE', type=str)
-    parser.add_argument('-t', '--validate-configuration', action='store',
-                        metavar='CONFIG_FILE', type=str)
+                        metavar='CONFIG_FILE', type=str, default='/etc/backup.yml')
     return parser.parse_args()
 
 
