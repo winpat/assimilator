@@ -27,9 +27,7 @@ cfg = {
     },
     'retention': {
         'enable': False,
-    },
-    'preexec': '',
-    'postexec': ''
+    }
 }
 
 
@@ -82,12 +80,14 @@ def validate_config(cfg):
                 raise ConfigValidationError('Invalid retention time "{}" for "{}"'
                                             .format(cfg['retention'][item], item))
 
-    for executable in cfg["postexec"]:
-        if not os.access(executable, os.X_OK):
-            raise ConfigValidationError('Postexec script is not executable'.format(executable))
+    if 'postexec' in cfg:
+        for executable in cfg["postexec"]:
+            if not os.access(executable, os.X_OK):
+                raise ConfigValidationError('Postexec script is not executable'.format(executable))
 
-    for executable in cfg["preexec"]:
-        if not os.access(executable, os.X_OK):
-            raise ConfigValidationError('Postexec script is not executable'.format(executable))
+    if 'preexec' in cfg:
+        for executable in cfg["preexec"]:
+            if not os.access(executable, os.X_OK):
+                raise ConfigValidationError('Postexec script is not executable'.format(executable))
 
     return True

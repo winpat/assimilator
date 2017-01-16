@@ -14,8 +14,10 @@ def config():
 
 def test_invalid_compression_level(config):
 
-    for level in  [-1, 10, 33]:
+    for level in [-1, 10, 33]:
+
         cfg['compression_level'] = level
+
         with pytest.raises(ConfigValidationError) as e:
             validate_config(cfg)
             assert e == "Invalid compression level {}".format(cfg['compression_level'])

@@ -4,7 +4,9 @@
 from os import environ
 from subprocess import check_output, CalledProcessError, STDOUT
 from datetime import datetime
-from metrics import CREATE_DURATION_SECONDS, CREATE_RC, PRUNE_DURATION_SECONDS, PRUNE_RC
+from metrics import (CREATE_DURATION_SECONDS, CREATE_RETURN_CODE,
+                     PRUNE_DURATION_SECONDS, PRUNE_RETURN_CODE,
+                     parse_borg_create_output)
 import logging
 
 logger = logging.getLogger('logger')
@@ -46,11 +48,12 @@ def create_archive(cfg):
     environ["BORG_PASSPHRASE"] = cfg['repository']['passphrase']
 
     try:
-        out = check_output(cmd, stderr=STDOUT).decode('utf-8')
-        for line in out.split("\n"):
+        output = check_output(cmd, stderr=STDOUT).decode('utf-8').split("\n")
+        for line in output:
             print("{}".format(line))
+        parse_borg_create_output(output)
     except CalledProcessError as e:
-        CREATE_RC.set(e.returncode)
+        CREATE_RETURN_CODE.set(int(e.returncode))
         logger.error('Creation of archive failed with exception "%s"', e)
         raise RuntimeError('Unable to create backup')
 
@@ -84,6 +87,6 @@ def prune_repository(cfg):
                 print("{}".format(line))
 
     except CalledProcessError as e:
-        PRUNE_RC.set(e.returncode)
+        PRUNE_RETURN_CODE.set(int(e.returncode))
         logger.error('Pruning of repository failed with exception "%s"', e)
         raise RuntimeError('Unable to prune repository')

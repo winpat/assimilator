@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from prometheus_client import write_to_textfile, push_to_gateway
 from core import run_preexec, run_postexec, parse_arguments, configure_logger
 from borg import create_archive, prune_repository
 from config import load_config, ConfigValidationError
-from metrics import push_to_gateway, registry
+from metrics import registry
 import os
 import logging
 
@@ -45,4 +46,8 @@ if 'pushgateway' in cfg:
     push_to_gateway('{}:{}'.format(cfg['pushgateway']['host'],
                                    cfg['pushgateway']['port']),
                     job=cfg['pushgateway']['job'], registry=registry)
-    logger.info('Sent report to pushgateway')
+    logger.info('Sent metrics to pushgateway')
+
+logger.info('Backup completed')
+
+write_to_textfile('/tmp/latest_metrics.prom', registry)
