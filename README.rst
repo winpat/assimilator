@@ -1,27 +1,33 @@
-Assimilator
+`Assimilator <http://memory-alpha.wikia.com/wiki/Assimilation>`_
 ===========
 
 (Work in progress)
 
-A wrapper around borgbackup which:
+A wrapper around borgbackup that collects metrics and pushes them to a Prometheus Pushgateway.
 
 * Makes borgbackup configurable through a configuration file
 * Hande the execution of preexec and postexec scripts
-* Handling retention after a successful backup
-* Push metrics to a Prometheus Pushgateway
-
-
+* Handling retention of old archives after a successful backup
+* Push metrics to a `Prometheus Pushgateway <https://github.com/prometheus/pushgateway>`_
 Installation
 ------------
-1. Install the requirements
+1. Install the dependencies
 
 .. code:: shell
-   apt-get install python3 python3-yaml python3-pip
+
+   apt-get install python3 python3-pip
+
+2. Install the prometheus client library
+
+.. code:: shell
+
+   pip3 install -r requirements.txt
 
 Prometheus Metrics
 ------------------
 
 .. code:: promql
+
     # HELP assimilator_create_return_code Exit code of borgbackup create
     # TYPE assimilator_create_return_code gauge
     assimilator_create_return_code 0.0
@@ -73,3 +79,11 @@ Prometheus Metrics
     # HELP assimilator_postexec_duration_seconds Duration of assimilator postexec scripts
     # TYPE assimilator_postexec_duration_seconds gauge
     assimilator_postexec_duration_seconds 0.0
+
+Example Alerting Rules
+----------------------
+
+.. code:: promql
+
+    TBD
+  
