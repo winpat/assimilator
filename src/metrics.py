@@ -86,8 +86,6 @@ def parse_borg_create_output(output):
     CREATE_FILES_COUNT.set(match.group(1))
 
     # Parse "This archives:" section
-    print(output[9])
-    somestring = output[9]
     pattern = re.compile('This archive:\s*([0-9.]*\s[kBMGTEZY]{1,2})\s*([0-9.]*\s[kBMGTEZY]{1,2})\s*([0-9.]*\s[kBMGTEZY]{1,2})')
     match = re.match(pattern, somestring)
     CREATE_ARCHIVE_ORIGINAL_SIZE_BYTES.set(convert_to_byte(match.group(1)))
