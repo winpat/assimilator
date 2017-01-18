@@ -35,54 +35,78 @@ Prometheus Metrics
 
 .. code:: promql
 
-    # HELP assimilator_create_return_code Exit code of borgbackup create
-    # TYPE assimilator_create_return_code gauge
-    assimilator_create_return_code 0.0
-    # HELP assimilator_create_total_chunks Total chunks of created archive
-    # TYPE assimilator_create_total_chunks gauge
-    assimilator_create_total_chunks 24.0
-    # HELP assimilator_create_duration_seconds Duration of borgbackup create
-    # TYPE assimilator_create_duration_seconds gauge
-    assimilator_create_duration_seconds 1.7372676710001542
-    # HELP assimilator_create_unique_chunks Unique chunks of created archive
-    # TYPE assimilator_create_unique_chunks gauge
-    assimilator_create_unique_chunks 10.0
-    # HELP assimilator_create_files_count Number of transfered files
-    # TYPE assimilator_create_files_count gauge
-    assimilator_create_files_count 1.0
-    # HELP assimilator_archive_original_size_bytes Original size of created archive
-    # TYPE assimilator_archive_original_size_bytes gauge
-    assimilator_archive_original_size_bytes 840.0
-    # HELP assimilator_archive_compressed_size_bytes Compressed size of created archive
-    # TYPE assimilator_archive_compressed_size_bytes gauge
-    assimilator_archive_compressed_size_bytes 969.0
-    # HELP borg_prune_duration_seconds Duration of borgbackup prune
-    # TYPE borg_prune_duration_seconds gauge
-    borg_prune_duration_seconds 1.7606788160001088
-    # HELP assimilator_archive_deduplicated_size_bytes Deduplicated size of created archive
-    # TYPE assimilator_archive_deduplicated_size_bytes gauge
-    assimilator_archive_deduplicated_size_bytes 555.0
-    # HELP assimilator_preexec_return_code Exit code of assimilator preexec scripts
-    # TYPE assimilator_preexec_return_code gauge
-    assimilator_preexec_return_code 0.0
-    # HELP assimilator_all_archives_original_size_bytes Original size of all archives in repository
-    # TYPE assimilator_all_archives_original_size_bytes gauge
-    assimilator_all_archives_original_size_bytes 6720.0
-    # HELP assimilator_preexec_duration_seconds Duration of assimilator preexec scripts
-    # TYPE assimilator_preexec_duration_seconds gauge
-    assimilator_preexec_duration_seconds 0.0
+    # HELP borg_create_all_archives_compressed_size_bytes Compressed size of all archives in repository
+    # TYPE borg_create_all_archives_compressed_size_bytes gauge
+    borg_create_all_archives_compressed_size_bytes 2910.0
     # HELP borg_prune_return_code Exit code of borgbackup prune
     # TYPE borg_prune_return_code gauge
     borg_prune_return_code 0.0
-    # HELP assimilator_all_archives_compressed_size_bytes Compressed size of all archives in repository
-    # TYPE assimilator_all_archives_compressed_size_bytes gauge
-    assimilator_all_archives_compressed_size_bytes 7750.0
+    # HELP borg_create_all_archives_deduplicated_size_bytes Deduplicated size of all archives in repository
+    # TYPE borg_create_all_archives_deduplicated_size_bytes gauge
+    borg_create_all_archives_deduplicated_size_bytes 2420.0
+    # HELP borg_prune_unique_chunks_count Count of unique chunks in pruned repository
+    # TYPE borg_prune_unique_chunks_count gauge
+    borg_prune_unique_chunks_count 5.0
+    # HELP borg_prune_duration_seconds Duration of borgbackup prune
+    # TYPE borg_prune_duration_seconds gauge
+    borg_prune_duration_seconds 1.603191259999221
+    # HELP borg_create_total_chunks_count Count of total chunks in created repository
+    # TYPE borg_create_total_chunks_count gauge
+    borg_create_total_chunks_count 9.0
+    # HELP borg_create_return_code Exit code of borgbackup create
+    # TYPE borg_create_return_code gauge
+    borg_create_return_code 0.0
+    # HELP borg_prune_deleted_data_original_size_bytes Original size of deleted data in pruned repository
+    # TYPE borg_prune_deleted_data_original_size_bytes gauge
+    borg_prune_deleted_data_original_size_bytes -840.0
+    # HELP borg_create_unique_chunks_count Count of unique chunks in created repository
+    # TYPE borg_create_unique_chunks_count gauge
+    borg_create_unique_chunks_count 6.0
+    # HELP borg_create_duration_seconds Duration of borgbackup create
+    # TYPE borg_create_duration_seconds gauge
+    borg_create_duration_seconds 1.5591665729998567
+    # HELP borg_prune_deleted_data_compressed_size_bytes Compressed size of deleted data in pruned repository
+    # TYPE borg_prune_deleted_data_compressed_size_bytes gauge
+    borg_prune_deleted_data_compressed_size_bytes -969.0
+    # HELP borg_create_files_count Number of transfered files
+    # TYPE borg_create_files_count gauge
+    borg_create_files_count 1.0
+    # HELP borg_prune_deleted_data_deduplicated_size_bytes Deduplicated size of deleted data in pruned repository
+    # TYPE borg_prune_deleted_data_deduplicated_size_bytes gauge
+    borg_prune_deleted_data_deduplicated_size_bytes -555.0
+    # HELP borg_create_archive_original_size_bytes Original size of created archive
+    # TYPE borg_create_archive_original_size_bytes gauge
+    borg_create_archive_original_size_bytes 840.0
+    # HELP borg_prune_all_archives_original_size_bytes Original size of all archives in pruned repository
+    # TYPE borg_prune_all_archives_original_size_bytes gauge
+    borg_prune_all_archives_original_size_bytes 1680.0
+    # HELP assimilator_preexec_return_code Exit code of assimilator preexec scripts
+    # TYPE assimilator_preexec_return_code gauge
+    assimilator_preexec_return_code 0.0
+    # HELP borg_create_archive_compressed_size_bytes Compressed size of created archive
+    # TYPE borg_create_archive_compressed_size_bytes gauge
+    borg_create_archive_compressed_size_bytes 969.0
+    # HELP borg_prune_all_archives_compressed_size_bytes Compressed size of all archives in pruned repository
+    # TYPE borg_prune_all_archives_compressed_size_bytes gauge
+    borg_prune_all_archives_compressed_size_bytes 1940.0
+    # HELP assimilator_preexec_duration_seconds Duration of assimilator preexec scripts
+    # TYPE assimilator_preexec_duration_seconds gauge
+    assimilator_preexec_duration_seconds 0.0
+    # HELP borg_create_archive_deduplicated_size_bytes Deduplicated size of created archive
+    # TYPE borg_create_archive_deduplicated_size_bytes gauge
+    borg_create_archive_deduplicated_size_bytes 555.0
+    # HELP borg_prune_all_archives_deduplicated_size_bytes Deduplicated size of all archives in pruned repository
+    # TYPE borg_prune_all_archives_deduplicated_size_bytes gauge
+    borg_prune_all_archives_deduplicated_size_bytes 1870.0
     # HELP assimilator_postexec_return_code Exit code of assimilator postexec scripts
     # TYPE assimilator_postexec_return_code gauge
     assimilator_postexec_return_code 0.0
-    # HELP assimilator_all_archives_deduplicated_size_bytes Deduplicated size of all archives in repository
-    # TYPE assimilator_all_archives_deduplicated_size_bytes gauge
-    assimilator_all_archives_deduplicated_size_bytes 4850.0
+    # HELP borg_create_all_archives_original_size_bytes Original size of all archives in repository
+    # TYPE borg_create_all_archives_original_size_bytes gauge
+    borg_create_all_archives_original_size_bytes 2520.0
+    # HELP borg_prune_total_chunks_count Count of total chunks in pruned repository
+    # TYPE borg_prune_total_chunks_count gauge
+    borg_prune_total_chunks_count 6.0
     # HELP assimilator_postexec_duration_seconds Duration of assimilator postexec scripts
     # TYPE assimilator_postexec_duration_seconds gauge
     assimilator_postexec_duration_seconds 0.0
