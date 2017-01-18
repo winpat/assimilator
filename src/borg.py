@@ -6,7 +6,7 @@ from subprocess import check_output, CalledProcessError, STDOUT
 from datetime import datetime
 from metrics import (CREATE_DURATION_SECONDS, CREATE_RETURN_CODE,
                      PRUNE_DURATION_SECONDS, PRUNE_RETURN_CODE,
-                     parse_borg_create_output)
+                     parse_borg_create_output, parse_borg_prune_output)
 import logging
 
 logger = logging.getLogger('logger')
@@ -81,11 +81,10 @@ def prune_repository(cfg):
     environ["BORG_PASSPHRASE"] = cfg['repository']['passphrase']
 
     try:
-        out = check_output(cmd, stderr=STDOUT).decode('utf-8')
-        for line in out.split("\n"):
-            if line is not '':
-                print("{}".format(line))
-
+        output = check_output(cmd, stderr=STDOUT).decode('utf-8').split("\n")
+        for line in output:
+            print("{}".format(line))
+        parse_borg_prune_output(output)
     except CalledProcessError as e:
         PRUNE_RETURN_CODE.set(int(e.returncode))
         logger.error('Pruning of repository failed with exception "%s"', e)
