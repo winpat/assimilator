@@ -10,7 +10,7 @@
 
 (Work in progress)
 
-A wrapper around `borgbackup <https://github.com/borgbackup/borg>`_.that collects metrics and pushes them to a `Prometheus Pushgateway <https://github.com/prometheus/pushgateway>`_.
+A wrapper around `borgbackup <https://github.com/borgbackup/borg>`_ that collects metrics and pushes them to a `Prometheus Pushgateway <https://github.com/prometheus/pushgateway>`_.
 
 * Make borg configurable through a configuration file
 * Handle the execution of preexec and postexec scripts
