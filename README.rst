@@ -2,33 +2,68 @@
 ===========
 |travis| |license|
 
-.. |travis| image:: https://img.shields.io/travis/adfinis-sygroup/vault-client.svg?style=flat-square
-   :target: https://img.shields.io/github/license/adfinis-sygroup/vault-client.svg?style=flat-square
+.. |travis| image:: https://img.shields.io/travis/winpat/assimilator.svg?style=flat-square
+   :target: https://img.shields.io/github/license/winpat/assimilator.svg?style=flat-square
 
-.. |license| image:: https://img.shields.io/github/license/adfinis-sygroup/vault-client.svg?style=flat-square
-   :target: https://img.shields.io/github/license/adfinis-sygroup/vault-client.svg?style=flat-square
+.. |license| image:: https://img.shields.io/github/license/winpat/assimilator.svg?style=flat-square
+   :target: https://img.shields.io/github/license/winpat/assimilator.svg?style=flat-square
 
 (Work in progress)
 
-A wrapper around borgbackup that collects metrics and pushes them to a Prometheus Pushgateway.
+A wrapper around `borgbackup <https://github.com/borgbackup/borg>`_.that collects metrics and pushes them to a `Prometheus Pushgateway <https://github.com/prometheus/pushgateway>`_.
 
-* Makes borgbackup configurable through a configuration file
-* Hande the execution of preexec and postexec scripts
+* Make borg configurable through a configuration file
+* Handle the execution of preexec and postexec scripts
 * Handling retention of old archives after a successful backup
 * Push metrics to a `Prometheus Pushgateway <https://github.com/prometheus/pushgateway>`_
 Installation
 ------------
-1. Install the dependencies
+1. Install python3 and pip
 
 .. code:: shell
 
    apt-get install python3 python3-pip
 
-2. Install the prometheus client library
+2. Install the required python libraries
 
 .. code:: shell
 
    pip3 install -r requirements.txt
+  
+Configuration
+-------------
+
+.. code:: yaml
+
+    compression: none
+    compression_level: 0
+
+    paths:
+      - /
+
+    excludes:
+      - /tmp
+      - /proc
+      - /sys
+
+    repository: 
+      user: root
+      host: collective.domain.tld
+      path: /var/backups/<your_repository>
+      passphrase: <password>
+      port: 22
+
+    retention:
+      enable: true
+      hourly: 1
+      daily: 1
+      weekly: 1
+      monthly: 1
+      yearly: 1
+
+    logging:
+      level: DEBUG
+      syslog: False
 
 Prometheus Metrics
 ------------------
@@ -117,4 +152,13 @@ Example Alerting Rules
 .. code:: promql
 
     TBD
-  
+    
+Contributions
+-------------
+Contributions are more than welcome! Please feel free to open new issues or pull requests.
+
+License
+-------
+GNU GENERAL PUBLIC LICENSE Version 3
+
+See the	`LICENSE <LICENSE>`_ file.
