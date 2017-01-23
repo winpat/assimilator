@@ -61,8 +61,8 @@ Chunk index:                       4                    6
 
     for metric_name, solution in test_metrics.items():
         assert registry.get_sample_value(metric_name) == solution
-    
-    
+
+
 def test_parse_borg_prune():
     output='''------------------------------------------------------------------------------
                        Original size      Compressed size    Deduplicated size
@@ -72,7 +72,7 @@ All archives:                1.68 kB              1.94 kB              1.87 kB
                        Unique chunks         Total chunks
 Chunk index:                       5                    6
 ------------------------------------------------------------------------------'''.splitlines()
-    
+
     parse_borg_prune_output(output)
 
     test_metrics = {
@@ -88,4 +88,3 @@ Chunk index:                       5                    6
 
     for metric_name, solution in test_metrics.items():
         assert registry.get_sample_value(metric_name) == solution
-    

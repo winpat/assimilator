@@ -7,7 +7,9 @@ import re
 
 registry = CollectorRegistry()
 
-
+ASSIMILATOR_RETURN_CODE = Gauge('assimilator_return_code',
+                                'Exit code of assimilator',
+                                registry=registry)
 PREEXEC_RETURN_CODE = Gauge('assimilator_preexec_return_code',
                             'Exit code of assimilator preexec scripts',
                             registry=registry)
@@ -186,3 +188,16 @@ def convert_to_byte(size):
 
     # 4 th function from switcher dictionary
     return float(value) * switcher.get(unit)
+
+
+def calculate_return_code():
+
+    rc = 0
+
+    for rc_var in ['PREEXEC_RETURN_CODE', 'POSTEXEC_RETURN_CODE',
+                   'CREATE_RETURN_CODE', 'PRUNE_RETURN_CODE']:
+        if registry.get_sample_value(rc_var) is not 0:
+            rc = 1
+
+    ASSIMILATOR_RETURN_CODE.set(rc)
+    return rc

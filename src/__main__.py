@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from prometheus_client import write_to_textfile, push_to_gateway
+from prometheus_client import push_to_gateway
 from core import run_preexec, run_postexec, parse_arguments, configure_logger
 from borg import create_archive, prune_repository
 from config import load_config, ConfigValidationError
-from metrics import registry
-import os
+from metrics import registry, calculate_return_code
+import sys
 import logging
 
 
@@ -15,7 +15,7 @@ args = parse_arguments()
 try:
     cfg = load_config(args.cfgfile)
 except ConfigValidationError as e:
-    os.exit(1)
+    sys.exit(1)
 
 
 configure_logger(level=cfg['logging']['level'],
@@ -48,6 +48,7 @@ if 'pushgateway' in cfg:
                     job=cfg['pushgateway']['job'], registry=registry)
     logger.info('Sent metrics to pushgateway')
 
+rc = calculate_return_code()
 logger.info('Backup completed')
 
-write_to_textfile('/tmp/latest_metrics.prom', registry)
+sys.exit(rc)
