@@ -84,15 +84,15 @@ def prune_repository(cfg):
 
     cmd = ['borg', 'prune', '--verbose', '--list', '--stats']
 
-    retention_contraints = [{'template': '--keep-hourly {}', 'name': 'hourly'},
-                            {'template': '--keep-daily {}', 'name': 'daily'},
-                            {'template': '--keep-weekly {}', 'name': 'weekly'},
-                            {'template': '--keep-monthly {}', 'name': 'monthly'},
-                            {'template': '--keep-yearly {}', 'name': 'yearly'}]
+    retention_contraints = [{'flag': '--keep-hourly', 'name': 'hourly'},
+                            {'flag': '--keep-daily', 'name': 'daily'},
+                            {'flag': '--keep-weekly', 'name': 'weekly'},
+                            {'flag': '--keep-monthly', 'name': 'monthly'},
+                            {'flag': '--keep-yearly', 'name': 'yearly'}]
 
     for constraint in retention_contraints:
         try:
-            cmd.append(constraint['template'].format(cfg['retention'][constraint['name']]))
+            cmd.extend([constraint['flag'], str(cfg['retention'][constraint['name']])])
         except KeyError:
             pass
 

@@ -122,7 +122,7 @@ def _trim_borg_output(output):
     be cut away.
     '''
 
-    sentinel_index = output.index("------------------------------------------------------------------------------")
+    sentinel_index = output.index('------------------------------------------------------------------------------')
     return output[sentinel_index:]
 
 
