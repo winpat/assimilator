@@ -1,5 +1,6 @@
 # assimilator configuration file
 
+identity_file: /root/.ssh/borg.key
 compression: none
 compression_level: 0
 

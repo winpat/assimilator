@@ -15,6 +15,7 @@ args = parse_arguments()
 try:
     cfg = load_config(args.cfgfile)
 except ConfigValidationError as e:
+    print(e)
     sys.exit(1)
 
 

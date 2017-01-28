@@ -22,6 +22,11 @@ def _compose_repository(cfg):
     ))
 
 
+def _setup_borg_env(cfg):
+    environ["BORG_PASSPHRASE"] = cfg['repository']['passphrase']
+    environ["BORG_RSH"] = 'ssh -i {}'.format(cfg['identity_file'])
+
+
 @CREATE_DURATION_SECONDS.time()
 def create_archive(cfg):
     ''' Creates a new archive
@@ -46,7 +51,7 @@ def create_archive(cfg):
     logger.debug('Composed shell command "%s"', ' '.join(cmd))
     logger.info('Creating archive "{}"'.format(timestamp))
 
-    environ["BORG_PASSPHRASE"] = cfg['repository']['passphrase']
+    _setup_borg_env(cfg)
 
     output = []
 
@@ -77,21 +82,27 @@ def prune_repository(cfg):
 
     '''
 
-    logger.info('Pruning old archives in repository')
-
     cmd = ['borg', 'prune', '--verbose', '--list', '--stats']
 
-    cmd.extend(['-H {}'.format(cfg['retention']['hourly']),
-                '-d {}'.format(cfg['retention']['daily']),
-                '-w {}'.format(cfg['retention']['weekly']),
-                '-m {}'.format(cfg['retention']['monthly']),
-                '-y {}'.format(cfg['retention']['yearly'])])
+    retention_contraints = [{'template': '--keep-hourly {}', 'name': 'hourly'},
+                            {'template': '--keep-daily {}', 'name': 'daily'},
+                            {'template': '--keep-weekly {}', 'name': 'weekly'},
+                            {'template': '--keep-monthly {}', 'name': 'monthly'},
+                            {'template': '--keep-yearly {}', 'name': 'yearly'}]
+
+    for constraint in retention_contraints:
+        try:
+            cmd.append(constraint['template'].format(cfg['retention'][constraint['name']]))
+        except KeyError:
+            pass
 
     cmd.append(_compose_repository(cfg))
 
+    logger.info('Pruning old archives in repository')
     logger.debug('Composed shell command "%s"', ' '.join(cmd))
 
-    environ["BORG_PASSPHRASE"] = cfg['repository']['passphrase']
+
+    _setup_borg_env(cfg)
 
     output = []
     # Stream output from stderr to stdout

@@ -74,20 +74,38 @@ def validate_config(cfg):
         raise ConfigValidationError('Invalid log level "{}" specified'
                                     .format(cfg['logging']['level']))
 
-    if cfg['retention']['enable'] is True:
-        for item in ['hourly', 'daily', 'weekly', 'monthly', 'yearly']:
-            if cfg['retention'][item] < 1:
-                raise ConfigValidationError('Invalid retention time "{}" for "{}"'
-                                            .format(cfg['retention'][item], item))
+    if not os.access(cfg['identity_file'], os.R_OK):
+        raise ConfigValidationError('SSH identity file "{}" is not readable'.format(cfg['identity_file']))
 
     if 'postexec' in cfg:
         for executable in cfg["postexec"]:
             if not os.access(executable, os.X_OK):
-                raise ConfigValidationError('Postexec script is not executable'.format(executable))
+                raise ConfigValidationError('Postexec script "{}" is not executable'.format(executable))
 
     if 'preexec' in cfg:
         for executable in cfg["preexec"]:
             if not os.access(executable, os.X_OK):
-                raise ConfigValidationError('Postexec script is not executable'.format(executable))
+                raise ConfigValidationError('Postexec script "{}" is not executable'.format(executable))
+
+    if cfg['retention']['enable'] is True:
+        _validate_retention_config(cfg)
 
     return True
+
+
+def _validate_retention_config(cfg):
+
+    valid_retention_keys = ['hourly', 'daily', 'weekly', 'monthly', 'yearly']
+
+    for item in valid_retention_keys:
+        try:
+            if cfg['retention'][item] < 1:
+                raise ConfigValidationError('Invalid retention time "{}" for "{}"'
+                                            .format(cfg['retention'][item], item))
+
+        except KeyError:
+            # If retention is enabled at least one constraint is required (hourly, daily...)
+
+            # Check of intersections
+            if len(set(valid_retention_keys) & set(list(cfg['retention'].keys()))) < 1:
+                raise ConfigValidationError('No valid retention constraints found in configuration. Please specify at least one (hourly, daily...)')
