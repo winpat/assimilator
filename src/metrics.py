@@ -111,9 +111,26 @@ CREATE_UNIQUE_CHUNKS_COUNT = Gauge('borg_create_unique_chunks_count',
                                    registry=registry)
 
 
+def _trim_borg_output(output):
+    ''' Returns borg backup output trimed of unrequired lines.
+
+    The `borg create` output will contain all transfered files and
+    directories, as well as information about the progress of the current
+    file transfer.
+
+    Because the count of transfered files varies from run to run it has to
+    be cut away.
+    '''
+
+    sentinel_index = output.index("------------------------------------------------------------------------------")
+    return output[sentinel_index:]
+
+
 def parse_borg_create_output(output):
     '''Parse `borg create` output and extract various metrics
     '''
+
+    output = _trim_borg_output(output)
 
     # Parse "Number of files:" section
     pattern = re.compile('Number of files: ([0-9]*)')
@@ -140,9 +157,12 @@ def parse_borg_create_output(output):
     CREATE_UNIQUE_CHUNKS_COUNT.set(match.group(1))
     CREATE_TOTAL_CHUNKS_COUNT.set(match.group(2))
 
+
 def parse_borg_prune_output(output):
     '''Parse `borg prune` output and extract various metrics
     '''
+
+    output = _trim_borg_output(output)
 
     # Parse "Deleted data:" section
     pattern = re.compile('Deleted data:\s*([\-0-9.]*\s[kBMGTEZY]{1,2})\s*([\-0-9.]*\s[kBMGTEZY]{1,2})\s*([\-0-9.]*\s[kBMGTEZY]{1,2})')
@@ -166,8 +186,9 @@ def parse_borg_prune_output(output):
 
 
 def convert_to_byte(size):
-    ''' Takes a value with it binary prefix (https://en.wikipedia.org/wiki/Binary_prefix) 
-    and converts it to raw bytes.
+    ''' Takes a value with it binary prefix and converts it to raw bytes.
+
+    For further reference checkout https://en.wikipedia.org/wiki/Binary_prefix
     '''
 
     size = size.split(" ")
